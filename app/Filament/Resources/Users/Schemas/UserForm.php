@@ -17,10 +17,12 @@ class UserForm
                 TextInput::make('email')
                     ->email()
                     ->required()
+                    ->unique(ignoreRecord: true) // Email harus unik
                     ->maxLength(255),
                 TextInput::make('password')
                     ->password()
                     ->required()
+                    ->minLength(6), // Password minimal 6 karakter
             ]);
     }
 }

@@ -16,6 +16,10 @@ class UsersTable
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('email')->searchable()->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
+                    ->dateTime() // Menampilkan tanggal & waktu
+                    ->sortable(),
             ])
             ->filters([
                 //
