@@ -13,7 +13,7 @@ class Post extends Model
     'category_id',
     'color',
     'image',
-    'body',
+    'content',
     'tags',
     'published',
     'published_at',
