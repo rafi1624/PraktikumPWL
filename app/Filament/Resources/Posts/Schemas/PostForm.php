@@ -29,12 +29,27 @@ public static function configure(Schema $schema): Schema
                 ->schema([
                     // Grouping title, slug, category, and color into 2 columns
                     Group::make([
-                        TextInput::make("title"),
-                        TextInput::make("slug"),
+                        TextInput::make("title")
+                        ->rules(["required","min:5","max:255"])
+                        ->validationMessages([
+                            'required' => 'Title wajib diisi ya.',
+                            'min' => 'Title minimal 5 karakter.',
+                        ]),
+                        TextInput::make("slug")
+                        ->rules(["required","min:3","unique"])
+                        ->validationMessages([
+                            'required' => 'Slug wajib diisi.',
+                            'min' => 'Slug minimal 3 karakter.',
+                            'unique' => 'Slug sudah digunakan, coba yang lain ya.',
+                        ]),
                         Select::make("category_id")
                             ->relationship("category", "name")
                             ->preload()
-                            ->searchable(),
+                            ->searchable()
+                            ->rules(["required"])
+                            ->validationMessages([
+                                'required' => 'Category wajib dipilih ya.',
+                            ]),
                         ColorPicker::make("color"),
                     ])->columns(2),
 
@@ -47,8 +62,12 @@ public static function configure(Schema $schema): Schema
                 Section::make("Image Upload")
                     ->schema([
                         FileUpload::make("image")
+                            ->required()
                             ->disk("public")
-                            ->directory("posts"),
+                            ->directory("posts")
+                            ->validationMessages([
+                                'required' => 'Image wajib diupload ya.',
+                            ]),
                     ]),
 
                 // Section 3: Meta Information
