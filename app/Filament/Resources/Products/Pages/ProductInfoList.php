@@ -7,6 +7,8 @@ use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\IconEntry;
@@ -26,71 +28,73 @@ class ViewProduct extends ViewRecord
     {
         return $schema
             ->components([
-                // 1. Section: Product Info (Disesuaikan dengan penambahan Created At)
-                Section::make('Product Info')
-                    ->description('') 
-                    ->schema([
-                        TextEntry::make('name')
-                            ->label('Product Name')
-                            ->color('#F97316'), 
-                        
-                        TextEntry::make('id')
-                            ->label('Product ID'),
-                        
-                        TextEntry::make('sku')
-                            ->label('Product SKU')
-                            ->badge()
-                            ->color('warning')
-                            ->fontFamily('mono'),
-                        
-                        TextEntry::make('description')
-                            ->label('Product Description')
-                            ->columnSpanFull(),
+                // Menggunakan Tabs dengan mode Vertikal sesuai gambar
+                Tabs::make('Product Tabs')
+                    ->tabs([
+                        // Tab 1: Product Details
+                        Tab::make('Product Details')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                TextEntry::make('name')
+                                    ->label('Product Name')
+                                    ->weight('bold')
+                                    ->color('primary'),
+                                
+                                TextEntry::make('id')
+                                    ->label('Product ID'),
+                                
+                                TextEntry::make('sku')
+                                    ->label('Product SKU')
+                                    ->badge()
+                                    ->color('info'),
+                                
+                                TextEntry::make('description')
+                                    ->label('Product Description'),
 
-                        // Penambahan Product Creation Date sesuai gambar
-                        TextEntry::make('created_at')
-                            ->label('Product Creation Date')
-                            ->date('d M Y')
-                            ->color('info'),
-                    ]),
+                                TextEntry::make('created_at')
+                                    ->label('Product Creation Date')
+                                    ->date('d M Y')
+                                    ->color('info'),
+                            ]),
 
-                // 2. Section: Product Price and Stock
-                Section::make('Product Price and Stock')
-                    ->description('')
-                    ->schema([
-                        TextEntry::make('price')
-                            ->label('Product Price')
-                            ->weight('bold')
-                            ->color('primary')
-                            ->icon('heroicon-s-currency-dollar')
-                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                        
-                        TextEntry::make('stock')
-                            ->label('Product Stock')
-                            ->suffix(' pcs')
-                            ->icon('heroicon-o-cube'),
+                        // Tab 2: Product Price and Stock
+                        Tab::make('Product Price and Stock')
+                            ->icon('heroicon-o-banknotes')
+                            ->schema([
+                                TextEntry::make('price')
+                                    ->label('Product Price')
+                                    ->weight('bold')
+                                    ->color('primary')
+                                    ->icon('heroicon-s-currency-dollar'),
+                                
+                                TextEntry::make('stock')
+                                    ->label('Product Stock')
+                                    ->weight('bold')
+                                    ->color('primary')
+                                    ->badge()
+                                    ->getStateUsing(fn ($record) => $record->stock . ' pcs')
+                                    ->color(fn ($record) => $record->stock <= 5 ? 'danger' : ($record->stock <= 20 ? 'warning' : 'success')),
+                            ]),
+
+                        // Tab 3: Image and Status
+                        Tab::make('Image and Status')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
+                                ImageEntry::make('image')
+                                    ->label('Product Image')
+                                    ->disk('public'),
+                                
+                                IconEntry::make('is_active')
+                                    ->label('Is Active?')
+                                    ->boolean(),
+                                
+                                IconEntry::make('is_featured')
+                                    ->label('Is Featured?')
+                                    ->boolean(),
+                            ]),
                     ])
-                    ->columns(2),
-
-                // 3. Section: Product Image & Status
-                Section::make('Product Image')
-                    ->description('')
-                    ->schema([
-                        ImageEntry::make('image')
-                            ->label('Product Image')
-                            ->disk('public')
-                            ->height(180)
-                            ->columnSpanFull(),
-
-                        IconEntry::make('is_active')
-                            ->label('Is Active?')
-                            ->boolean(),
-                        
-                        IconEntry::make('is_featured')
-                            ->label('Is Featured?')
-                            ->boolean(),
-                    ])
-                    ->columns(2),
+                    ->columnSpanFull()
+                    ->vertical() // Tampilan vertikal
             ]);
     }
 }
