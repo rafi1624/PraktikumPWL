@@ -15,6 +15,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Group;
 use Filament\Support\Icons\Heroicon;
+use App\Models\Category;
 
 class PostForm
 {
@@ -42,14 +43,12 @@ public static function configure(Schema $schema): Schema
                             'min' => 'Slug minimal 3 karakter.',
                             'unique' => 'Slug sudah digunakan, coba yang lain ya.',
                         ]),
-                        Select::make("category_id")
-                            ->relationship("category", "name")
-                            ->preload()
-                            ->searchable()
-                            ->rules(["required"])
-                            ->validationMessages([
-                                'required' => 'Category wajib dipilih ya.',
-                            ]),
+                        Select::make('category_id')
+                            ->relationship('category', 'name')
+                            ->options(Category::all()->pluck('name', 'id'))
+                            ->required()
+                            // ->preload()
+                            ->searchable(),                        
                         ColorPicker::make("color"),
                     ])->columns(2),
 
