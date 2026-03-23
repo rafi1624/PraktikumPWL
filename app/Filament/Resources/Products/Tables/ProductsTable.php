@@ -19,6 +19,7 @@ class ProductsTable
     {
         return $table
             ->columns([
+                
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
