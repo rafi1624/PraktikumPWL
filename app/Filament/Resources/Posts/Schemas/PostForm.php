@@ -72,11 +72,16 @@ public static function configure(Schema $schema): Schema
                 // Section 3: Meta Information
                 Section::make("Meta Information")
                     ->schema([
-                        TagsInput::make("tags"),
+                        //TagsInput::make("tags"),
+                        Select::make('tags')
+                            ->multiple()
+                            ->preload()
+                            ->relationship('tags','name'),
                         Checkbox::make("published"),
+                        DateTimePicker::make("published_at"),
+
                     ])->columns(2),
 
-                DateTimePicker::make("published_at"),
             ]),
         ])->columns(2);
 }

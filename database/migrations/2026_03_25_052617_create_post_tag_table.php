@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->id()->first();
+        Schema::create('post_tag', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            $table->renameColumn('body', 'content');
+            
+            $table->unique(['post_id', 'tag_id']);
         });
     }
 
@@ -23,9 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->dropColumn(['id', 'created_at', 'updated_at']);
-            $table->renameColumn('content', 'body');
-        });
+        Schema::dropIfExists('post_tag');
     }
 };

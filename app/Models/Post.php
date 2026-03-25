@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
 {
@@ -14,18 +15,22 @@ class Post extends Model
     'color',
     'image',
     'content',
-    'tags',
+    // 'tags',
     'published',
     'published_at',
 ];
     protected $casts = [
-    'tags' => 'array',
     'published' => 'boolean',
     'published_at' => 'date',
 ];
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class,'post_tag');
     }
 
 }
